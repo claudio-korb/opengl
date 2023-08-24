@@ -1,6 +1,21 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <cstring>
+
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 480
+
+static float pxToCoordinateX(double x)
+{
+    return (2*x - WINDOW_WIDTH) / (WINDOW_WIDTH);
+}
+
+static float pxToCoordinateY(double y)
+{
+    return (-1)*(2*y - WINDOW_HEIGHT) / (WINDOW_HEIGHT);
+
+}
 
 int main()
 {
@@ -11,7 +26,7 @@ int main()
         return -1;
     }
 
-    window = glfwCreateWindow(640, 480, "Render Screen", NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Render Screen", NULL, NULL);
 
     if(!window)
     {
@@ -47,6 +62,11 @@ int main()
     
     while(!glfwWindowShouldClose(window))
     {
+        static uint8_t canClick = true;
+        static float newPositions[6] = {0,0,
+                                        0,0,
+                                        0,0};
+        static uint8_t clickCount = 0;        
         glClear(GL_COLOR_BUFFER_BIT);
         
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -54,6 +74,33 @@ int main()
         glfwSwapBuffers(window);
 
         glfwPollEvents();
+
+        int click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT); 
+
+        if(canClick && click == GLFW_PRESS)
+        {
+            double xpos, ypos;
+            static uint8_t i = 0;
+            glfwGetCursorPos(window, &xpos, &ypos);
+            xpos = pxToCoordinateX(xpos);
+            ypos = pxToCoordinateY(ypos);
+            newPositions[2*i + 0] = xpos;
+            newPositions[2*i + 1] = ypos;
+            std::cout << "X: " << xpos << " | Y: " << ypos << std::endl;
+            canClick = false;
+            i++;
+            if(i > 2)
+            {
+                memcpy(positions, newPositions, sizeof(positions));
+                glBufferData(GL_ARRAY_BUFFER, 6*sizeof(float), positions, GL_STATIC_DRAW);
+                i = 0;
+            }
+        }
+
+        if(click == GLFW_RELEASE)
+        {
+            canClick = true;
+        }
     }
 
     return 0;
