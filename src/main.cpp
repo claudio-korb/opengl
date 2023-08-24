@@ -7,7 +7,7 @@ int main()
     GLFWwindow* window;
     if(!glfwInit())
     {
-        std::cout << "Error 1" << std::endl;
+        std::cout << "Error on glfWInit()" << std::endl;
         return -1;
     }
 
@@ -15,6 +15,7 @@ int main()
 
     if(!window)
     {
+        std::cout << "Error on glfwCreateWindow()" << std::endl;
         glfwTerminate();
         return -1;
     }
@@ -24,9 +25,11 @@ int main()
     int errorCode = glewInit();
     if(errorCode != GLEW_OK)
     {
-        std::cout << "Error :" << errorCode << std::endl;
+        std::cout << "Error on glewInit():" << glGetString(errorCode) << std::endl;
         return -1;
     }
+
+    std::cout << glGetString(GL_VERSION) << std::endl;
 
     while(!glfwWindowShouldClose(window))
     {
