@@ -1,10 +1,7 @@
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#include <iostream>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
+#include "../include/log.h"
 typedef struct 
 {
     std::string VertexSource;

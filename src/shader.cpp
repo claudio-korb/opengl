@@ -56,51 +56,51 @@ void Shader::CompileShaders()
 {
     unsigned int vertex_id = glCreateShader(GL_VERTEX_SHADER);
     const char* src = this->sources.VertexSource.c_str();
-    glShaderSource(vertex_id, 1, &src, nullptr);
-    glCompileShader(vertex_id);
+    GLCall(glShaderSource(vertex_id, 1, &src, nullptr));
+    GLCall(glCompileShader(vertex_id));
 
     int compile_result;
-    glGetShaderiv(vertex_id, GL_COMPILE_STATUS, &compile_result);
+    GLCall(glGetShaderiv(vertex_id, GL_COMPILE_STATUS, &compile_result));
     if(compile_result == GL_FALSE)
     {
         int length;
-        glGetShaderiv(vertex_id, GL_INFO_LOG_LENGTH, &length);
+        GLCall(glGetShaderiv(vertex_id, GL_INFO_LOG_LENGTH, &length));
         char* message = (char*)alloca(length * sizeof(char));
-        glGetShaderInfoLog(vertex_id, length, &length, message);
+        GLCall(glGetShaderInfoLog(vertex_id, length, &length, message));
         std::cout << "Failed to compile Vertex shader!" << std::endl;
         std::cout << message << std::endl;
-        glDeleteShader(vertex_id);
+        GLCall(glDeleteShader(vertex_id));
         return;
     }
 
     unsigned int fragment_id = glCreateShader(GL_FRAGMENT_SHADER);
 
     src = this->sources.FragmentSource.c_str();
-    glShaderSource(fragment_id, 1, &src, nullptr);
-    glCompileShader(fragment_id);
+    GLCall(glShaderSource(fragment_id, 1, &src, nullptr));
+    GLCall(glCompileShader(fragment_id));
 
-    glGetShaderiv(fragment_id, GL_COMPILE_STATUS, &compile_result);
+    GLCall(glGetShaderiv(fragment_id, GL_COMPILE_STATUS, &compile_result));
     if(compile_result == GL_FALSE)
     {
         int length;
-        glGetShaderiv(fragment_id, GL_INFO_LOG_LENGTH, &length);
+        GLCall(glGetShaderiv(fragment_id, GL_INFO_LOG_LENGTH, &length));
         char* message = (char*)alloca(length * sizeof(char));
-        glGetShaderInfoLog(fragment_id, length, &length, message);
+        GLCall(glGetShaderInfoLog(fragment_id, length, &length, message));
         std::cout << "Failed to compile Fragment shader!" << std::endl;
         std::cout << message << std::endl;
-        glDeleteShader(fragment_id);
+        GLCall(glDeleteShader(fragment_id));
         return;
     }
 
     unsigned int program = glCreateProgram();
 
-    glAttachShader(program, vertex_id);
-    glAttachShader(program, fragment_id);
-    glLinkProgram(program);
-    glValidateProgram(program);
+    GLCall(glAttachShader(program, vertex_id));
+    GLCall(glAttachShader(program, fragment_id));
+    GLCall(glLinkProgram(program));
+    GLCall(glValidateProgram(program));
 
-    glDeleteShader(vertex_id);
-    glDeleteShader(fragment_id);
+    GLCall(glDeleteShader(vertex_id));
+    GLCall(glDeleteShader(fragment_id));
 
     this->program = program;
 
@@ -108,5 +108,5 @@ void Shader::CompileShaders()
 
 Shader::~Shader()
 {
-    glDeleteProgram(this->program);
+    GLCall(glDeleteProgram(this->program));
 }
