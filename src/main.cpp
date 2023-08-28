@@ -56,22 +56,22 @@ int main()
     };
 
     unsigned int vBuffer;
-    glGenBuffers(1, &vBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vBuffer);
-    glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+    GLCall(glGenBuffers(1, &vBuffer));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vBuffer));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0));
     
     unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    GLCall(glGenBuffers(1, &ibo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
     Shader shader = Shader("../res/shaders/Basic.shader");
     shader.CompileShaders();
 
-    glUseProgram(shader.GetProgram());
+    GLCall(glUseProgram(shader.GetProgram()));
 
     while(!glfwWindowShouldClose(window))
     {
@@ -81,9 +81,10 @@ int main()
                                         0,0,
                                         0,0};
         static uint8_t clickCount = 0;        
-        glClear(GL_COLOR_BUFFER_BIT);
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
         
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        GLClearError();
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         glfwSwapBuffers(window);
 
@@ -107,7 +108,7 @@ int main()
             if(i > 3)
             {
                 memcpy(positions, newPositions, sizeof(positions));
-                glBufferData(GL_ARRAY_BUFFER, 6 *2 * sizeof(float), positions, GL_STATIC_DRAW);
+                GLCall(glBufferData(GL_ARRAY_BUFFER, 6 *2 * sizeof(float), positions, GL_STATIC_DRAW));
                 i = 0;
             }
         }
