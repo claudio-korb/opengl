@@ -34,6 +34,8 @@ int main()
 
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(1);
+
     int errorCode = glewInit();
     if(errorCode != GLEW_OK)
     {
@@ -68,10 +70,13 @@ int main()
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
-    Shader shader = Shader("../res/shaders/Basic.shader");
+    Shader shader = Shader("../res/shaders/Basic.glsl");
     shader.CompileShaders();
 
     GLCall(glUseProgram(shader.GetProgram()));
+
+    float r = 0.0f;
+    float increment = 0.05f;
 
     while(!glfwWindowShouldClose(window))
     {
@@ -82,9 +87,21 @@ int main()
                                         0,0};
         static uint8_t clickCount = 0;        
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
-        
-        GLClearError();
+
+        int uniform_location = glGetUniformLocation(shader.GetProgram(), "u_Color");
+        if(uniform_location != -1)
+        {
+            GLCall(glUniform4f(uniform_location, r, 0.3f, 0.3f, 1.0f));
+        }
+
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+        if(r > 1.0f)
+            increment = -0.05f;
+        else if(r < 0.0f)
+            increment = 0.05f;
+
+        r+=increment;
 
         glfwSwapBuffers(window);
 
