@@ -1,4 +1,4 @@
-#include "../include/shader.h"
+#include "renderer.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -63,9 +63,6 @@ int main()
     GLCall(glBindVertexArray(vao));
 
     unsigned int vBuffer;
-    GLCall(glGenBuffers(1, &vBuffer));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vBuffer));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
     GLCall(glEnableVertexAttribArray(0));
     GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0));
