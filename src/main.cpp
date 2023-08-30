@@ -1,4 +1,6 @@
-#include "../include/shader.h"
+#include "renderer.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -62,18 +64,11 @@ int main()
     GLCall(glGenVertexArrays(1, &vao));
     GLCall(glBindVertexArray(vao));
 
-    unsigned int vBuffer;
-    GLCall(glGenBuffers(1, &vBuffer));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vBuffer));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
-
+    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
     GLCall(glEnableVertexAttribArray(0));
     GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0));
     
-    unsigned int ibo;
-    GLCall(glGenBuffers(1, &ibo));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+    IndexBuffer ib(indices, 6);
 
     Shader shader = Shader("../res/shaders/Basic.glsl");
     shader.CompileShaders();
@@ -106,7 +101,7 @@ int main()
         }
 
         GLCall(glBindVertexArray(vao));
-        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+        ib.Bind();
 
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
@@ -135,13 +130,13 @@ int main()
             newPositions[2*i + 1] = ypos;
             std::cout << "X: " << xpos << " | Y: " << ypos << std::endl;
             canClick = false;
-            i++;
-            if(i > 3)
-            {
-                memcpy(positions, newPositions, sizeof(positions));
-                GLCall(glBufferData(GL_ARRAY_BUFFER, 6 *2 * sizeof(float), positions, GL_STATIC_DRAW));
-                i = 0;
-            }
+            // i++;
+            // if(i > 3)
+            // {
+            //     memcpy(positions, newPositions, sizeof(positions));
+            //     GLCall(glBufferData(GL_ARRAY_BUFFER, 6 *2 * sizeof(float), positions, GL_STATIC_DRAW));
+            //     i = 0;
+            // }
         }
 
         if(click == GLFW_RELEASE)

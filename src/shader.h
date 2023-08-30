@@ -1,7 +1,9 @@
+#pragma once
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#include "../include/log.h"
+#include "renderer.h"
+
 typedef struct 
 {
     std::string VertexSource;
