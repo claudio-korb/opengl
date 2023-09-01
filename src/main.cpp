@@ -3,6 +3,7 @@
 #include "indexbuffer.h"
 #include "vertexarray.h"
 #include "shader.h"
+#include "texture.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -58,7 +59,7 @@ int main()
 
     unsigned int indices[] = {
         0, 1, 2,
-        2, 3, 0
+        2, 3, 1
     };
 
     unsigned int vao;
@@ -74,6 +75,10 @@ int main()
 
     Shader shader = Shader("../res/shaders/Basic.glsl");
 
+    Texture texture("res/textures/gold.jpg");
+    texture.Bind();
+    shader.SetUniform1i("u_Texture", 0);
+    
     Renderer renderer;
 
     float r = 0.0f;
