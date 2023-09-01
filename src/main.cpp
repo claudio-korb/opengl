@@ -2,6 +2,7 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 #include "vertexarray.h"
+#include "shader.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -72,7 +73,6 @@ int main()
     IndexBuffer ib(indices, 6);
 
     Shader shader = Shader("../res/shaders/Basic.glsl");
-    shader.CompileShaders();
 
     GLCall(glBindVertexArray(0));
     GLCall(glUseProgram(0));
@@ -93,16 +93,11 @@ int main()
         static uint8_t clickCount = 0;  
 
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
-        GLCall(glUseProgram(shader.GetProgram()));
 
-        int uniform_location = glGetUniformLocation(shader.GetProgram(), "u_Color");
-        if(uniform_location != -1)
-        {
-            GLCall(glUniform4f(uniform_location, r, 0.3f, 0.3f, 1.0f));
-        }
-
+        shader.Bind();
         va.Bind();
         ib.Bind();
+        shader.SetUniform4f("u_Color", r, 0.3f, 0.3f, 1.0f);
 
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
