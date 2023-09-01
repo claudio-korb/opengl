@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map> 
-#include "renderer.h"
+#include "logs.h"
 
 typedef struct 
 {
@@ -20,8 +20,8 @@ private:
 public:
     Shader(const std::string& filepath);
     ~Shader();
-    void Bind();
-    void Unbind();
+    void Bind() const;
+    void Unbind() const;
 
     //set uniforms
     void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);

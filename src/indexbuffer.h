@@ -1,5 +1,7 @@
 #pragma once
 
+#include "logs.h"
+
 class IndexBuffer
 {
 private:
