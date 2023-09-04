@@ -5,6 +5,9 @@
 #include "shader.h"
 #include "texture.h"
 
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
+
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
@@ -51,7 +54,7 @@ int main()
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     float positions[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f,
+        -2.0f, -0.5f, 0.0f, 0.0f,
          0.5f, -0.5f, 1.0f, 0.0f,
          0.5f,  0.5f, 1.0f, 1.0f,
         -0.5f,  0.5f, 0.0f, 1.0f
@@ -61,9 +64,8 @@ int main()
         0, 1, 2,
         0, 3, 2
     };
-
-    
-
+    GLCall(glEnable(GL_BLEND));
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     unsigned int vao;
 
     VertexArray va;
@@ -76,7 +78,13 @@ int main()
         
     IndexBuffer ib(indices, 6);
 
+    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
     Shader shader = Shader("../res/shaders/Basic.glsl");
+    shader.Bind();        
+    
+    shader.SetUniform1i("u_Texture", 0);
+    shader.SetUniformMat4f("u_MVP", proj);
 
     Texture texture("../res/textures/gold.jpg");
 
@@ -95,9 +103,6 @@ int main()
         static uint8_t clickCount = 0;  
 
         texture.Bind();
-        shader.Bind();        
-        
-        shader.SetUniform1i("u_Texture", 0);
 
         renderer.Draw(va, ib, shader);
 
@@ -130,7 +135,7 @@ int main()
             // if(i > 3)
             // {
             //     memcpy(positions, newPositions, sizeof(positions));
-            //     GLCall(glBufferData(GL_ARRAY_BUFFER, 6 *2 * sizeof(float), positions, GL_STATIC_DRAW));
+            //     vb = VertexBuffer(positions, 4 * 4 * sizeof(float));
             //     i = 0;
             // }
         }
