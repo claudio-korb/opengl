@@ -51,23 +51,26 @@ int main()
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     float positions[] = {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-        -0.5f,  0.5f,
-         0.5f,  0.5f
+        -0.5f, -0.5f, 0.0f, 0.0f,
+         0.5f, -0.5f, 1.0f, 0.0f,
+         0.5f,  0.5f, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f, 1.0f
     };
 
     unsigned int indices[] = {
         0, 1, 2,
-        2, 3, 1
+        0, 3, 2
     };
+
+    
 
     unsigned int vao;
 
     VertexArray va;
-    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+    VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
     VertexBufferLayout layout;
+    layout.Push<float>(2);
     layout.Push<float>(2);
     va.AddBuffer(vb, layout);
         
@@ -75,10 +78,8 @@ int main()
 
     Shader shader = Shader("../res/shaders/Basic.glsl");
 
-    Texture texture("res/textures/gold.jpg");
-    texture.Bind();
-    shader.SetUniform1i("u_Texture", 0);
-    
+    Texture texture("../res/textures/gold.jpg");
+
     Renderer renderer;
 
     float r = 0.0f;
@@ -93,8 +94,10 @@ int main()
                                         0,0};
         static uint8_t clickCount = 0;  
 
-        shader.Bind();
-        shader.SetUniform4f("u_Color", r, 0.3f, 0.3f, 1.0f);
+        texture.Bind();
+        shader.Bind();        
+        
+        shader.SetUniform1i("u_Texture", 0);
 
         renderer.Draw(va, ib, shader);
 
